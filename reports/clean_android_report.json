@@ -1,0 +1,598 @@
+{
+  "project_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture",
+  "scanned_files_count": 6,
+  "total_detections_count": 20,
+  "elapsed_seconds": 0.0009441250003874302,
+  "summary_by_category": {
+    "kotlin_idiomatic": 2,
+    "coroutines_concurrency": 9,
+    "compose_dsl": 4,
+    "creational": 3,
+    "structural": 0,
+    "behavioral": 2,
+    "resilience": 0,
+    "principle": 0
+  },
+  "detections": [
+    {
+      "pattern_type": "sealed_hierarchy_adt",
+      "pattern_category": "kotlin_idiomatic",
+      "target_name": "UserUiState",
+      "target_kind": "sealed_interface",
+      "confidence": {
+        "score": 0.95,
+        "percentage": "95%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt",
+        "line": 16,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "KOTLIN_SEALED_HIERARCHY",
+          "description": "Sealed type 'UserUiState' (sealed_interface) defines an Algebraic Data Type (ADT) hierarchy for exhaustive pattern matching",
+          "weight": 0.95,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt",
+            "line": 16,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "inline_value_class",
+      "pattern_category": "kotlin_idiomatic",
+      "target_name": "UserId",
+      "target_kind": "value_class",
+      "confidence": {
+        "score": 0.95,
+        "percentage": "95%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt",
+        "line": 6,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "KOTLIN_INLINE_VALUE_CLASS",
+          "description": "Value class 'UserId' encapsulates strongly typed domain primitive with zero runtime allocation overhead",
+          "weight": 0.95,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt",
+            "line": 6,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "structured_concurrency_scope",
+      "pattern_category": "coroutines_concurrency",
+      "target_name": "UserViewModel",
+      "target_kind": "class",
+      "confidence": {
+        "score": 0.9,
+        "percentage": "90%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt",
+        "line": 12,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "COROUTINES_STRUCTURED_SCOPE",
+          "description": "Type 'UserViewModel' bounds asynchronous jobs within structured CoroutineScope",
+          "weight": 0.9,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt",
+            "line": 12,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "stateflow_reactive_stream",
+      "pattern_category": "coroutines_concurrency",
+      "target_name": "UserRepositoryImpl",
+      "target_kind": "class",
+      "confidence": {
+        "score": 0.95,
+        "percentage": "95%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt",
+        "line": 12,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "COROUTINES_STATEFLOW_STREAM",
+          "description": "Type 'UserRepositoryImpl' defines 1 hot StateFlow/SharedFlow reactive stream(s) (_usersFlow)",
+          "weight": 0.95,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt",
+            "line": 12,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "stateflow_reactive_stream",
+      "pattern_category": "coroutines_concurrency",
+      "target_name": "UserViewModel",
+      "target_kind": "class",
+      "confidence": {
+        "score": 0.95,
+        "percentage": "95%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt",
+        "line": 12,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "COROUTINES_STATEFLOW_STREAM",
+          "description": "Type 'UserViewModel' defines 2 hot StateFlow/SharedFlow reactive stream(s) (_uiState, uiState)",
+          "weight": 0.95,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt",
+            "line": 12,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "suspending_function_async",
+      "pattern_category": "coroutines_concurrency",
+      "target_name": "getUser",
+      "target_kind": "suspend_function",
+      "confidence": {
+        "score": 0.85,
+        "percentage": "85%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt",
+        "line": 15,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "COROUTINES_SUSPEND_FUNCTION",
+          "description": "Suspending function 'getUser' enables non-blocking asynchronous continuation",
+          "weight": 0.85,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt",
+            "line": 15,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "suspending_function_async",
+      "pattern_category": "coroutines_concurrency",
+      "target_name": "saveUser",
+      "target_kind": "suspend_function",
+      "confidence": {
+        "score": 0.85,
+        "percentage": "85%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt",
+        "line": 19,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "COROUTINES_SUSPEND_FUNCTION",
+          "description": "Suspending function 'saveUser' enables non-blocking asynchronous continuation",
+          "weight": 0.85,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt",
+            "line": 19,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "suspending_function_async",
+      "pattern_category": "coroutines_concurrency",
+      "target_name": "getUser",
+      "target_kind": "suspend_function",
+      "confidence": {
+        "score": 0.85,
+        "percentage": "85%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt",
+        "line": 6,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "COROUTINES_SUSPEND_FUNCTION",
+          "description": "Suspending function 'getUser' enables non-blocking asynchronous continuation",
+          "weight": 0.85,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt",
+            "line": 6,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "suspending_function_async",
+      "pattern_category": "coroutines_concurrency",
+      "target_name": "saveUser",
+      "target_kind": "suspend_function",
+      "confidence": {
+        "score": 0.85,
+        "percentage": "85%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt",
+        "line": 7,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "COROUTINES_SUSPEND_FUNCTION",
+          "description": "Suspending function 'saveUser' enables non-blocking asynchronous continuation",
+          "weight": 0.85,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt",
+            "line": 7,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "dispatcher_io_offload",
+      "pattern_category": "coroutines_concurrency",
+      "target_name": "getUser",
+      "target_kind": "function",
+      "confidence": {
+        "score": 0.9,
+        "percentage": "90%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt",
+        "line": 15,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "COROUTINES_DISPATCHER_OFFLOAD",
+          "description": "Function 'getUser' explicitly offloads blocking computation using withContext(Dispatchers)",
+          "weight": 0.9,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt",
+            "line": 15,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "dispatcher_io_offload",
+      "pattern_category": "coroutines_concurrency",
+      "target_name": "saveUser",
+      "target_kind": "function",
+      "confidence": {
+        "score": 0.9,
+        "percentage": "90%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt",
+        "line": 19,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "COROUTINES_DISPATCHER_OFFLOAD",
+          "description": "Function 'saveUser' explicitly offloads blocking computation using withContext(Dispatchers)",
+          "weight": 0.9,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt",
+            "line": 19,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "compose_declarative_view",
+      "pattern_category": "compose_dsl",
+      "target_name": "UserProfileScreen",
+      "target_kind": "composable_view",
+      "confidence": {
+        "score": 0.95,
+        "percentage": "95%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt",
+        "line": 9,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "COMPOSE_DECLARATIVE_VIEW",
+          "description": "Composable function 'UserProfileScreen' acts as a declarative UI component",
+          "weight": 0.95,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt",
+            "line": 9,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "compose_declarative_view",
+      "pattern_category": "compose_dsl",
+      "target_name": "UserCardView",
+      "target_kind": "composable_view",
+      "confidence": {
+        "score": 0.95,
+        "percentage": "95%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt",
+        "line": 15,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "COMPOSE_DECLARATIVE_VIEW",
+          "description": "Composable function 'UserCardView' acts as a declarative UI component",
+          "weight": 0.95,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt",
+            "line": 15,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "remember_mutable_state",
+      "pattern_category": "compose_dsl",
+      "target_name": "UserProfileScreen",
+      "target_kind": "function",
+      "confidence": {
+        "score": 0.9,
+        "percentage": "90%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt",
+        "line": 9,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "COMPOSE_REMEMBER_MUTABLE_STATE",
+          "description": "Function 'UserProfileScreen' preserves observable UI state across recompositions using remember",
+          "weight": 0.9,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt",
+            "line": 9,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "view_model_state_holder",
+      "pattern_category": "compose_dsl",
+      "target_name": "UserViewModel",
+      "target_kind": "class",
+      "confidence": {
+        "score": 0.95,
+        "percentage": "95%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt",
+        "line": 12,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "COMPOSE_VIEWMODEL_STATE_HOLDER",
+          "description": "Class 'UserViewModel' implements ViewModel architectural state holder",
+          "weight": 0.95,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt",
+            "line": 12,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "singleton_object_declaration",
+      "pattern_category": "creational",
+      "target_name": "NetworkConfig",
+      "target_kind": "object",
+      "confidence": {
+        "score": 0.95,
+        "percentage": "95%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt",
+        "line": 3,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "CREATIONAL_SINGLETON_OBJECT",
+          "description": "Object declaration 'NetworkConfig' provides language-level thread-safe Singleton",
+          "weight": 0.95,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt",
+            "line": 3,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "factory_method",
+      "pattern_category": "creational",
+      "target_name": "Companion.createClient",
+      "target_kind": "function",
+      "confidence": {
+        "score": 0.85,
+        "percentage": "85%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt",
+        "line": 9,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "CREATIONAL_FACTORY_METHOD",
+          "description": "Method 'createClient' on 'Companion' encapsulates instance instantiation as a Factory Method",
+          "weight": 0.85,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt",
+            "line": 9,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "prototype_data_copy",
+      "pattern_category": "creational",
+      "target_name": "UserAccount",
+      "target_kind": "data_class",
+      "confidence": {
+        "score": 0.85,
+        "percentage": "85%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt",
+        "line": 9,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "CREATIONAL_PROTOTYPE_DATA_COPY",
+          "description": "Type 'UserAccount' implements Prototype pattern for instance replication and value transformation",
+          "weight": 0.85,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt",
+            "line": 9,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "observer_flow_published",
+      "pattern_category": "behavioral",
+      "target_name": "UserViewModel",
+      "target_kind": "class",
+      "confidence": {
+        "score": 0.9,
+        "percentage": "90%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt",
+        "line": 12,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "BEHAVIORAL_OBSERVER_FLOW",
+          "description": "Type 'UserViewModel' acts as Reactive Observer Subject publishing 1 stream(s)",
+          "weight": 0.9,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt",
+            "line": 12,
+            "column": 1
+          }
+        }
+      ]
+    },
+    {
+      "pattern_type": "state_sealed_class_fsm",
+      "pattern_category": "behavioral",
+      "target_name": "UserUiState",
+      "target_kind": "sealed_interface",
+      "confidence": {
+        "score": 0.95,
+        "percentage": "95%",
+        "level": "VERY_HIGH"
+      },
+      "primary_location": {
+        "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt",
+        "line": 16,
+        "column": 1
+      },
+      "related_locations": [],
+      "evidences": [
+        {
+          "rule_code": "BEHAVIORAL_STATE_SEALED_FSM",
+          "description": "Sealed type 'UserUiState' models type-safe Finite State Machine (FSM) with associated lifecycle states",
+          "weight": 0.95,
+          "location": {
+            "file_path": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt",
+            "line": 16,
+            "column": 1
+          }
+        }
+      ]
+    }
+  ]
+}

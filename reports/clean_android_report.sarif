@@ -1,0 +1,417 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "DPX-Kotlin",
+          "informationUri": "https://github.com/bivex/DPX-Kotlin",
+          "version": "0.1.0"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "sealed_hierarchy_adt",
+          "level": "note",
+          "message": {
+            "text": "Exhaustive sum types / Algebraic Data Types representing closed polymorphic domain models."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt"
+                },
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "inline_value_class",
+          "level": "note",
+          "message": {
+            "text": "Zero-runtime-overhead strongly typed domain primitives preventing primitive obsession."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt"
+                },
+                "region": {
+                  "startLine": 6,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "structured_concurrency_scope",
+          "level": "note",
+          "message": {
+            "text": "Parent-child lifecycle-bound coroutine scopes preventing unconfined background leaks."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "stateflow_reactive_stream",
+          "level": "note",
+          "message": {
+            "text": "Hot reactive state stream emitting updates to subscribed collectors in presentation/domain layers."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "stateflow_reactive_stream",
+          "level": "note",
+          "message": {
+            "text": "Hot reactive state stream emitting updates to subscribed collectors in presentation/domain layers."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "suspending_function_async",
+          "level": "note",
+          "message": {
+            "text": "Sequential non-blocking asynchronous execution without callback hell."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt"
+                },
+                "region": {
+                  "startLine": 15,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "suspending_function_async",
+          "level": "note",
+          "message": {
+            "text": "Sequential non-blocking asynchronous execution without callback hell."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt"
+                },
+                "region": {
+                  "startLine": 19,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "suspending_function_async",
+          "level": "note",
+          "message": {
+            "text": "Sequential non-blocking asynchronous execution without callback hell."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt"
+                },
+                "region": {
+                  "startLine": 6,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "suspending_function_async",
+          "level": "note",
+          "message": {
+            "text": "Sequential non-blocking asynchronous execution without callback hell."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt"
+                },
+                "region": {
+                  "startLine": 7,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "dispatcher_io_offload",
+          "level": "note",
+          "message": {
+            "text": "Explicit switching to background worker pools for blocking I/O and computation."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt"
+                },
+                "region": {
+                  "startLine": 15,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "dispatcher_io_offload",
+          "level": "note",
+          "message": {
+            "text": "Explicit switching to background worker pools for blocking I/O and computation."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt"
+                },
+                "region": {
+                  "startLine": 19,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "compose_declarative_view",
+          "level": "note",
+          "message": {
+            "text": "Declarative UI component transforming data state into reactive UI trees."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt"
+                },
+                "region": {
+                  "startLine": 9,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "compose_declarative_view",
+          "level": "note",
+          "message": {
+            "text": "Declarative UI component transforming data state into reactive UI trees."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt"
+                },
+                "region": {
+                  "startLine": 15,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "remember_mutable_state",
+          "level": "note",
+          "message": {
+            "text": "Recomposition-scoped observable state within Jetpack Compose functions."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt"
+                },
+                "region": {
+                  "startLine": 9,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "view_model_state_holder",
+          "level": "note",
+          "message": {
+            "text": "Architecture component retaining and coordinating UI state across configuration changes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "singleton_object_declaration",
+          "level": "note",
+          "message": {
+            "text": "Thread-safe, lazy language-level Singleton via `object` declaration."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt"
+                },
+                "region": {
+                  "startLine": 3,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "factory_method",
+          "level": "note",
+          "message": {
+            "text": "Static or interface factory method instantiating polymorphic types (`create...`, `make...`)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt"
+                },
+                "region": {
+                  "startLine": 9,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "prototype_data_copy",
+          "level": "note",
+          "message": {
+            "text": "Immutable instance replication and value transformation via `copy()` or `Cloneable`."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt"
+                },
+                "region": {
+                  "startLine": 9,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "observer_flow_published",
+          "level": "note",
+          "message": {
+            "text": "Reactive observer publisher notifying subscribed collectors on state mutations."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "state_sealed_class_fsm",
+          "level": "note",
+          "message": {
+            "text": "Type-safe finite state machine modeling distinct lifecycle states with payload data."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt"
+                },
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

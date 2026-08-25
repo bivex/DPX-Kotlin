@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Scanner Report - DPX-Kotlin Architecture HUD - /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture</title>
+    <style>
+        :root {
+            --bg: #0b0f17;
+            --card-bg: #131b26;
+            --border: #222f42;
+            --text: #cbd5e1;
+            --heading: #f8fafc;
+            --accent: #7c3aed;
+            --kotlin-purple: #7f52ff;
+            --green: #22c55e;
+            --cyan: #0ea5e9;
+            --yellow: #f59e0b;
+            --red: #ef4444;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace, sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 30px 20px; line-height: 1.5; }
+        .container { max-width: 1280px; margin: 0 auto; }
+        
+        header { 
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 20px; 
+            margin-bottom: 25px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        h1 { color: var(--heading); font-size: 26px; display: flex; align-items: center; gap: 10px; }
+        .subtitle { color: #94a3b8; font-size: 14px; margin-top: 5px; }
+        
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .btn-ai-context {
+            background: linear-gradient(135deg, #7f52ff 0%, #d946ef 100%);
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(127, 82, 255, 0.35);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .btn-ai-context:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(127, 82, 255, 0.5);
+        }
+        .btn-view-prompt {
+            background: var(--card-bg);
+            color: var(--heading);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-view-prompt:hover {
+            border-color: var(--kotlin-purple);
+            color: var(--kotlin-purple);
+        }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .kpi-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+        .kpi-title { font-size: 12px; text-transform: uppercase; color: #94a3b8; font-weight: 600; letter-spacing: 0.5px; }
+        .kpi-value { font-size: 28px; font-weight: 700; color: var(--heading); margin-top: 5px; }
+
+        .category-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: center; }
+        .cat-filter-btn { padding: 8px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--card-bg); color: var(--heading); font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.1s, opacity 0.2s; }
+        .cat-filter-btn:hover { transform: translateY(-1px); opacity: 0.9; }
+        .cat-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .btn-all { background: #1e293b; color: #f8fafc; border-color: #475569; }
+
+        .search-bar { width: 100%; padding: 14px 18px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--heading); font-size: 14px; margin-bottom: 25px; outline: none; transition: border-color 0.2s; }
+        .search-bar:focus { border-color: var(--kotlin-purple); }
+
+        .pattern-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 15px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
+        .pattern-card:hover { border-color: #7f52ff88; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .card-header { background: #182230; padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid var(--border); }
+        .header-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        .card-index { color: #64748b; font-weight: 700; font-size: 13px; }
+        
+        .category-badge { padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; letter-spacing: 0.5px; }
+        .pattern-badge { padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 12px; }
+        .target-name { color: var(--heading); font-size: 14px; }
+        
+        .confidence-badge { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+        .badge-vh { background: #14532d55; color: #4ade80; border: 1px solid #22c55e; }
+        .badge-h { background: #0c4a6e55; color: #38bdf8; border: 1px solid #0284c7; }
+        .badge-m { background: #78350f55; color: #fbbf24; border: 1px solid #d97706; }
+        .badge-l { background: #7f1d1d55; color: #f87171; border: 1px solid #dc2626; }
+
+        .btn-copy-card-ai {
+            background: rgba(127, 82, 255, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(127, 82, 255, 0.35);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-copy-card-ai:hover {
+            background: rgba(127, 82, 255, 0.3);
+            color: #ffffff;
+            border-color: #7f52ff;
+        }
+
+        .card-body { padding: 16px 18px; font-size: 13px; }
+        .summary-text { margin-bottom: 10px; color: #e2e8f0; font-size: 14px; }
+        .primary-loc { margin-bottom: 12px; color: #94a3b8; }
+        code { background: #0b0f17; padding: 3px 6px; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: #c084fc; border: 1px solid #222f42; }
+
+        .evidence-section { margin-top: 14px; }
+        .evidence-list { list-style: none; margin-top: 8px; }
+        .evidence-item { margin-bottom: 7px; padding-left: 12px; border-left: 3px solid; }
+        .weight-tag { font-weight: 700; font-family: monospace; font-size: 13px; }
+        .rule-code { color: #94a3b8; font-size: 11px; font-family: monospace; }
+        .location-tag { color: #c084fc; font-size: 11px; margin-left: 6px; }
+        .related-locs { margin-top: 12px; color: #94a3b8; }
+        .related-locs ul { margin-left: 20px; margin-top: 4px; }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #10b981;
+            color: #ffffff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            z-index: 9999;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+            padding: 20px;
+        }
+        .modal-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 900px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+        .modal-header {
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-title { color: var(--heading); font-size: 18px; font-weight: 700; }
+        .modal-close { background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; }
+        .modal-body { padding: 20px 22px; overflow-y: auto; flex: 1; }
+        .prompt-textarea {
+            width: 100%;
+            height: 400px;
+            background: #090d13;
+            color: #c084fc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: ui-monospace, monospace;
+            font-size: 12.5px;
+            line-height: 1.4;
+            resize: vertical;
+            outline: none;
+        }
+        .modal-footer {
+            padding: 16px 22px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>🎯 DPX-Kotlin Architecture & Coroutines Observability HUD</h1>
+                <div class="subtitle">Coroutines, Flow, Jetpack Compose, GoF & Multiplatform Engine • Target: <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture</code></div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-view-prompt" onclick="openPromptModal()">👁️ View AI Context</button>
+                <button class="btn-ai-context" onclick="copyFullAiContext()">🤖 Copy AI Context Prompt</button>
+            </div>
+        </header>
+
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Total Detections</div>
+                <div class="kpi-value">20</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">High Confidence (≥70%)</div>
+                <div class="kpi-value" style="color: #4ade80;">20</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Med / Low (<70%)</div>
+                <div class="kpi-value" style="color: #fbbf24;">0</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Files Scanned</div>
+                <div class="kpi-value">6</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Scan Duration</div>
+                <div class="kpi-value">0.001s</div>
+            </div>
+        </div>
+
+        <div class="category-filters">
+            <button class="cat-filter-btn btn-all" data-filter="all"><strong>All Categories</strong>: 20</button>
+            
+                    <button class="cat-filter-btn" data-filter="kotlin_idiomatic" style="border-color: #9333ea; background: #581c8744; color: #a855f7;">
+                        <span class="cat-dot" style="background: #c084fc;"></span>
+                        <strong>Kotlin Idiomatic</strong>: 2
+                    </button>
+                    
+                    <button class="cat-filter-btn" data-filter="coroutines_concurrency" style="border-color: #0284c7; background: #0c4a6e44; color: #38bdf8;">
+                        <span class="cat-dot" style="background: #0ea5e9;"></span>
+                        <strong>Coroutines & Flow</strong>: 9
+                    </button>
+                    
+                    <button class="cat-filter-btn" data-filter="compose_dsl" style="border-color: #059669; background: #064e3b44; color: #34d399;">
+                        <span class="cat-dot" style="background: #10b981;"></span>
+                        <strong>Compose & DSL</strong>: 4
+                    </button>
+                    
+                    <button class="cat-filter-btn" data-filter="creational" style="border-color: #d97706; background: #78350f44; color: #fbbf24;">
+                        <span class="cat-dot" style="background: #f59e0b;"></span>
+                        <strong>GoF Creational</strong>: 3
+                    </button>
+                    
+                    <button class="cat-filter-btn" data-filter="behavioral" style="border-color: #db2777; background: #83184344; color: #f472b6;">
+                        <span class="cat-dot" style="background: #ec4899;"></span>
+                        <strong>GoF Behavioral</strong>: 2
+                    </button>
+                    
+        </div>
+
+        <input type="text" id="searchInput" class="search-bar" placeholder="🔎 Instant search by pattern name, category, target type, or rule (e.g. coroutine, stateflow, compose, sealed, hazard)...">
+
+        <div id="cardsContainer">
+            
+                <div class="pattern-card" data-pattern="sealed_hierarchy_adt" data-category="kotlin_idiomatic" data-target="UserUiState" style="border-left: 4px solid #c084fc;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#1</span>
+                            <span class="category-badge" style="color: #a855f7; background: #581c8744; border: 1px solid #9333ea;">
+                                KOTLIN IDIOMATIC
+                            </span>
+                            <span class="pattern-badge" style="color: #a855f7; background: #581c8744; border: 1px solid #9333ea;">
+                                SEALED_HIERARCHY_ADT
+                            </span>
+                            <span class="target-name">sealed_interface: <strong>UserUiState</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">95% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: sealed_hierarchy_adt (Kotlin Idiomatic)\n- Target: UserUiState (sealed_interface)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:16:1\n- Summary: Exhaustive sum types / Algebraic Data Types representing closed polymorphic domain models.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Exhaustive sum types / Algebraic Data Types representing closed polymorphic domain models.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:16:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #c084fc;"><span class="weight-tag" style="color: #a855f7;">+95%</span> <span class="rule-code">[KOTLIN_SEALED_HIERARCHY]</span> Sealed type &#x27;UserUiState&#x27; (sealed_interface) defines an Algebraic Data Type (ADT) hierarchy for exhaustive pattern matching <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:16:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="inline_value_class" data-category="kotlin_idiomatic" data-target="UserId" style="border-left: 4px solid #c084fc;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#2</span>
+                            <span class="category-badge" style="color: #a855f7; background: #581c8744; border: 1px solid #9333ea;">
+                                KOTLIN IDIOMATIC
+                            </span>
+                            <span class="pattern-badge" style="color: #a855f7; background: #581c8744; border: 1px solid #9333ea;">
+                                INLINE_VALUE_CLASS
+                            </span>
+                            <span class="target-name">value_class: <strong>UserId</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">95% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: inline_value_class (Kotlin Idiomatic)\n- Target: UserId (value_class)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:6:1\n- Summary: Zero-runtime-overhead strongly typed domain primitives preventing primitive obsession.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Zero-runtime-overhead strongly typed domain primitives preventing primitive obsession.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:6:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #c084fc;"><span class="weight-tag" style="color: #a855f7;">+95%</span> <span class="rule-code">[KOTLIN_INLINE_VALUE_CLASS]</span> Value class &#x27;UserId&#x27; encapsulates strongly typed domain primitive with zero runtime allocation overhead <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:6:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="structured_concurrency_scope" data-category="coroutines_concurrency" data-target="UserViewModel" style="border-left: 4px solid #0ea5e9;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#3</span>
+                            <span class="category-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                COROUTINES &amp; FLOW
+                            </span>
+                            <span class="pattern-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                STRUCTURED_CONCURRENCY_SCOPE
+                            </span>
+                            <span class="target-name">class: <strong>UserViewModel</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">90% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: structured_concurrency_scope (Coroutines & Flow)\n- Target: UserViewModel (class)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12:1\n- Summary: Parent-child lifecycle-bound coroutine scopes preventing unconfined background leaks.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Parent-child lifecycle-bound coroutine scopes preventing unconfined background leaks.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #0ea5e9;"><span class="weight-tag" style="color: #38bdf8;">+90%</span> <span class="rule-code">[COROUTINES_STRUCTURED_SCOPE]</span> Type &#x27;UserViewModel&#x27; bounds asynchronous jobs within structured CoroutineScope <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="stateflow_reactive_stream" data-category="coroutines_concurrency" data-target="UserRepositoryImpl" style="border-left: 4px solid #0ea5e9;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#4</span>
+                            <span class="category-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                COROUTINES &amp; FLOW
+                            </span>
+                            <span class="pattern-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                STATEFLOW_REACTIVE_STREAM
+                            </span>
+                            <span class="target-name">class: <strong>UserRepositoryImpl</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">95% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: stateflow_reactive_stream (Coroutines & Flow)\n- Target: UserRepositoryImpl (class)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:12:1\n- Summary: Hot reactive state stream emitting updates to subscribed collectors in presentation/domain layers.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Hot reactive state stream emitting updates to subscribed collectors in presentation/domain layers.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:12:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #0ea5e9;"><span class="weight-tag" style="color: #38bdf8;">+95%</span> <span class="rule-code">[COROUTINES_STATEFLOW_STREAM]</span> Type &#x27;UserRepositoryImpl&#x27; defines 1 hot StateFlow/SharedFlow reactive stream(s) (_usersFlow) <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:12:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="stateflow_reactive_stream" data-category="coroutines_concurrency" data-target="UserViewModel" style="border-left: 4px solid #0ea5e9;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#5</span>
+                            <span class="category-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                COROUTINES &amp; FLOW
+                            </span>
+                            <span class="pattern-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                STATEFLOW_REACTIVE_STREAM
+                            </span>
+                            <span class="target-name">class: <strong>UserViewModel</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">95% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: stateflow_reactive_stream (Coroutines & Flow)\n- Target: UserViewModel (class)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12:1\n- Summary: Hot reactive state stream emitting updates to subscribed collectors in presentation/domain layers.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Hot reactive state stream emitting updates to subscribed collectors in presentation/domain layers.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #0ea5e9;"><span class="weight-tag" style="color: #38bdf8;">+95%</span> <span class="rule-code">[COROUTINES_STATEFLOW_STREAM]</span> Type &#x27;UserViewModel&#x27; defines 2 hot StateFlow/SharedFlow reactive stream(s) (_uiState, uiState) <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="suspending_function_async" data-category="coroutines_concurrency" data-target="getUser" style="border-left: 4px solid #0ea5e9;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#6</span>
+                            <span class="category-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                COROUTINES &amp; FLOW
+                            </span>
+                            <span class="pattern-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                SUSPENDING_FUNCTION_ASYNC
+                            </span>
+                            <span class="target-name">suspend_function: <strong>getUser</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">85% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: suspending_function_async (Coroutines & Flow)\n- Target: getUser (suspend_function)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:15:1\n- Summary: Sequential non-blocking asynchronous execution without callback hell.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Sequential non-blocking asynchronous execution without callback hell.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:15:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #0ea5e9;"><span class="weight-tag" style="color: #38bdf8;">+85%</span> <span class="rule-code">[COROUTINES_SUSPEND_FUNCTION]</span> Suspending function &#x27;getUser&#x27; enables non-blocking asynchronous continuation <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:15:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="suspending_function_async" data-category="coroutines_concurrency" data-target="saveUser" style="border-left: 4px solid #0ea5e9;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#7</span>
+                            <span class="category-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                COROUTINES &amp; FLOW
+                            </span>
+                            <span class="pattern-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                SUSPENDING_FUNCTION_ASYNC
+                            </span>
+                            <span class="target-name">suspend_function: <strong>saveUser</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">85% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: suspending_function_async (Coroutines & Flow)\n- Target: saveUser (suspend_function)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:19:1\n- Summary: Sequential non-blocking asynchronous execution without callback hell.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Sequential non-blocking asynchronous execution without callback hell.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:19:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #0ea5e9;"><span class="weight-tag" style="color: #38bdf8;">+85%</span> <span class="rule-code">[COROUTINES_SUSPEND_FUNCTION]</span> Suspending function &#x27;saveUser&#x27; enables non-blocking asynchronous continuation <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:19:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="suspending_function_async" data-category="coroutines_concurrency" data-target="getUser" style="border-left: 4px solid #0ea5e9;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#8</span>
+                            <span class="category-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                COROUTINES &amp; FLOW
+                            </span>
+                            <span class="pattern-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                SUSPENDING_FUNCTION_ASYNC
+                            </span>
+                            <span class="target-name">suspend_function: <strong>getUser</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">85% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: suspending_function_async (Coroutines & Flow)\n- Target: getUser (suspend_function)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt:6:1\n- Summary: Sequential non-blocking asynchronous execution without callback hell.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Sequential non-blocking asynchronous execution without callback hell.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt:6:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #0ea5e9;"><span class="weight-tag" style="color: #38bdf8;">+85%</span> <span class="rule-code">[COROUTINES_SUSPEND_FUNCTION]</span> Suspending function &#x27;getUser&#x27; enables non-blocking asynchronous continuation <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt:6:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="suspending_function_async" data-category="coroutines_concurrency" data-target="saveUser" style="border-left: 4px solid #0ea5e9;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#9</span>
+                            <span class="category-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                COROUTINES &amp; FLOW
+                            </span>
+                            <span class="pattern-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                SUSPENDING_FUNCTION_ASYNC
+                            </span>
+                            <span class="target-name">suspend_function: <strong>saveUser</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">85% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: suspending_function_async (Coroutines & Flow)\n- Target: saveUser (suspend_function)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt:7:1\n- Summary: Sequential non-blocking asynchronous execution without callback hell.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Sequential non-blocking asynchronous execution without callback hell.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt:7:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #0ea5e9;"><span class="weight-tag" style="color: #38bdf8;">+85%</span> <span class="rule-code">[COROUTINES_SUSPEND_FUNCTION]</span> Suspending function &#x27;saveUser&#x27; enables non-blocking asynchronous continuation <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt:7:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="dispatcher_io_offload" data-category="coroutines_concurrency" data-target="getUser" style="border-left: 4px solid #0ea5e9;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#10</span>
+                            <span class="category-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                COROUTINES &amp; FLOW
+                            </span>
+                            <span class="pattern-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                DISPATCHER_IO_OFFLOAD
+                            </span>
+                            <span class="target-name">function: <strong>getUser</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">90% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: dispatcher_io_offload (Coroutines & Flow)\n- Target: getUser (function)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:15:1\n- Summary: Explicit switching to background worker pools for blocking I/O and computation.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Explicit switching to background worker pools for blocking I/O and computation.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:15:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #0ea5e9;"><span class="weight-tag" style="color: #38bdf8;">+90%</span> <span class="rule-code">[COROUTINES_DISPATCHER_OFFLOAD]</span> Function &#x27;getUser&#x27; explicitly offloads blocking computation using withContext(Dispatchers) <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:15:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="dispatcher_io_offload" data-category="coroutines_concurrency" data-target="saveUser" style="border-left: 4px solid #0ea5e9;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#11</span>
+                            <span class="category-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                COROUTINES &amp; FLOW
+                            </span>
+                            <span class="pattern-badge" style="color: #38bdf8; background: #0c4a6e44; border: 1px solid #0284c7;">
+                                DISPATCHER_IO_OFFLOAD
+                            </span>
+                            <span class="target-name">function: <strong>saveUser</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">90% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: dispatcher_io_offload (Coroutines & Flow)\n- Target: saveUser (function)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:19:1\n- Summary: Explicit switching to background worker pools for blocking I/O and computation.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Explicit switching to background worker pools for blocking I/O and computation.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:19:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #0ea5e9;"><span class="weight-tag" style="color: #38bdf8;">+90%</span> <span class="rule-code">[COROUTINES_DISPATCHER_OFFLOAD]</span> Function &#x27;saveUser&#x27; explicitly offloads blocking computation using withContext(Dispatchers) <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:19:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="compose_declarative_view" data-category="compose_dsl" data-target="UserProfileScreen" style="border-left: 4px solid #10b981;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#12</span>
+                            <span class="category-badge" style="color: #34d399; background: #064e3b44; border: 1px solid #059669;">
+                                COMPOSE &amp; DSL
+                            </span>
+                            <span class="pattern-badge" style="color: #34d399; background: #064e3b44; border: 1px solid #059669;">
+                                COMPOSE_DECLARATIVE_VIEW
+                            </span>
+                            <span class="target-name">composable_view: <strong>UserProfileScreen</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">95% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: compose_declarative_view (Compose & DSL)\n- Target: UserProfileScreen (composable_view)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:9:1\n- Summary: Declarative UI component transforming data state into reactive UI trees.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Declarative UI component transforming data state into reactive UI trees.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:9:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #10b981;"><span class="weight-tag" style="color: #34d399;">+95%</span> <span class="rule-code">[COMPOSE_DECLARATIVE_VIEW]</span> Composable function &#x27;UserProfileScreen&#x27; acts as a declarative UI component <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:9:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="compose_declarative_view" data-category="compose_dsl" data-target="UserCardView" style="border-left: 4px solid #10b981;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#13</span>
+                            <span class="category-badge" style="color: #34d399; background: #064e3b44; border: 1px solid #059669;">
+                                COMPOSE &amp; DSL
+                            </span>
+                            <span class="pattern-badge" style="color: #34d399; background: #064e3b44; border: 1px solid #059669;">
+                                COMPOSE_DECLARATIVE_VIEW
+                            </span>
+                            <span class="target-name">composable_view: <strong>UserCardView</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">95% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: compose_declarative_view (Compose & DSL)\n- Target: UserCardView (composable_view)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:15:1\n- Summary: Declarative UI component transforming data state into reactive UI trees.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Declarative UI component transforming data state into reactive UI trees.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:15:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #10b981;"><span class="weight-tag" style="color: #34d399;">+95%</span> <span class="rule-code">[COMPOSE_DECLARATIVE_VIEW]</span> Composable function &#x27;UserCardView&#x27; acts as a declarative UI component <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:15:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="remember_mutable_state" data-category="compose_dsl" data-target="UserProfileScreen" style="border-left: 4px solid #10b981;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#14</span>
+                            <span class="category-badge" style="color: #34d399; background: #064e3b44; border: 1px solid #059669;">
+                                COMPOSE &amp; DSL
+                            </span>
+                            <span class="pattern-badge" style="color: #34d399; background: #064e3b44; border: 1px solid #059669;">
+                                REMEMBER_MUTABLE_STATE
+                            </span>
+                            <span class="target-name">function: <strong>UserProfileScreen</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">90% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: remember_mutable_state (Compose & DSL)\n- Target: UserProfileScreen (function)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:9:1\n- Summary: Recomposition-scoped observable state within Jetpack Compose functions.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Recomposition-scoped observable state within Jetpack Compose functions.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:9:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #10b981;"><span class="weight-tag" style="color: #34d399;">+90%</span> <span class="rule-code">[COMPOSE_REMEMBER_MUTABLE_STATE]</span> Function &#x27;UserProfileScreen&#x27; preserves observable UI state across recompositions using remember <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:9:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="view_model_state_holder" data-category="compose_dsl" data-target="UserViewModel" style="border-left: 4px solid #10b981;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#15</span>
+                            <span class="category-badge" style="color: #34d399; background: #064e3b44; border: 1px solid #059669;">
+                                COMPOSE &amp; DSL
+                            </span>
+                            <span class="pattern-badge" style="color: #34d399; background: #064e3b44; border: 1px solid #059669;">
+                                VIEW_MODEL_STATE_HOLDER
+                            </span>
+                            <span class="target-name">class: <strong>UserViewModel</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">95% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: view_model_state_holder (Compose & DSL)\n- Target: UserViewModel (class)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12:1\n- Summary: Architecture component retaining and coordinating UI state across configuration changes.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Architecture component retaining and coordinating UI state across configuration changes.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #10b981;"><span class="weight-tag" style="color: #34d399;">+95%</span> <span class="rule-code">[COMPOSE_VIEWMODEL_STATE_HOLDER]</span> Class &#x27;UserViewModel&#x27; implements ViewModel architectural state holder <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="singleton_object_declaration" data-category="creational" data-target="NetworkConfig" style="border-left: 4px solid #f59e0b;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#16</span>
+                            <span class="category-badge" style="color: #fbbf24; background: #78350f44; border: 1px solid #d97706;">
+                                GOF CREATIONAL
+                            </span>
+                            <span class="pattern-badge" style="color: #fbbf24; background: #78350f44; border: 1px solid #d97706;">
+                                SINGLETON_OBJECT_DECLARATION
+                            </span>
+                            <span class="target-name">object: <strong>NetworkConfig</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">95% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: singleton_object_declaration (GoF Creational)\n- Target: NetworkConfig (object)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt:3:1\n- Summary: Thread-safe, lazy language-level Singleton via `object` declaration.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Thread-safe, lazy language-level Singleton via `object` declaration.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt:3:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #f59e0b;"><span class="weight-tag" style="color: #fbbf24;">+95%</span> <span class="rule-code">[CREATIONAL_SINGLETON_OBJECT]</span> Object declaration &#x27;NetworkConfig&#x27; provides language-level thread-safe Singleton <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt:3:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="factory_method" data-category="creational" data-target="Companion.createClient" style="border-left: 4px solid #f59e0b;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#17</span>
+                            <span class="category-badge" style="color: #fbbf24; background: #78350f44; border: 1px solid #d97706;">
+                                GOF CREATIONAL
+                            </span>
+                            <span class="pattern-badge" style="color: #fbbf24; background: #78350f44; border: 1px solid #d97706;">
+                                FACTORY_METHOD
+                            </span>
+                            <span class="target-name">function: <strong>Companion.createClient</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">85% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: factory_method (GoF Creational)\n- Target: Companion.createClient (function)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt:9:1\n- Summary: Static or interface factory method instantiating polymorphic types (`create...`, `make...`).\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Static or interface factory method instantiating polymorphic types (`create...`, `make...`).</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt:9:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #f59e0b;"><span class="weight-tag" style="color: #fbbf24;">+85%</span> <span class="rule-code">[CREATIONAL_FACTORY_METHOD]</span> Method &#x27;createClient&#x27; on &#x27;Companion&#x27; encapsulates instance instantiation as a Factory Method <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt:9:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="prototype_data_copy" data-category="creational" data-target="UserAccount" style="border-left: 4px solid #f59e0b;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#18</span>
+                            <span class="category-badge" style="color: #fbbf24; background: #78350f44; border: 1px solid #d97706;">
+                                GOF CREATIONAL
+                            </span>
+                            <span class="pattern-badge" style="color: #fbbf24; background: #78350f44; border: 1px solid #d97706;">
+                                PROTOTYPE_DATA_COPY
+                            </span>
+                            <span class="target-name">data_class: <strong>UserAccount</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">85% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: prototype_data_copy (GoF Creational)\n- Target: UserAccount (data_class)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:9:1\n- Summary: Immutable instance replication and value transformation via `copy()` or `Cloneable`.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Immutable instance replication and value transformation via `copy()` or `Cloneable`.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:9:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #f59e0b;"><span class="weight-tag" style="color: #fbbf24;">+85%</span> <span class="rule-code">[CREATIONAL_PROTOTYPE_DATA_COPY]</span> Type &#x27;UserAccount&#x27; implements Prototype pattern for instance replication and value transformation <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:9:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="observer_flow_published" data-category="behavioral" data-target="UserViewModel" style="border-left: 4px solid #ec4899;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#19</span>
+                            <span class="category-badge" style="color: #f472b6; background: #83184344; border: 1px solid #db2777;">
+                                GOF BEHAVIORAL
+                            </span>
+                            <span class="pattern-badge" style="color: #f472b6; background: #83184344; border: 1px solid #db2777;">
+                                OBSERVER_FLOW_PUBLISHED
+                            </span>
+                            <span class="target-name">class: <strong>UserViewModel</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">90% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: observer_flow_published (GoF Behavioral)\n- Target: UserViewModel (class)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12:1\n- Summary: Reactive observer publisher notifying subscribed collectors on state mutations.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Reactive observer publisher notifying subscribed collectors on state mutations.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #ec4899;"><span class="weight-tag" style="color: #f472b6;">+90%</span> <span class="rule-code">[BEHAVIORAL_OBSERVER_FLOW]</span> Type &#x27;UserViewModel&#x27; acts as Reactive Observer Subject publishing 1 stream(s) <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="pattern-card" data-pattern="state_sealed_class_fsm" data-category="behavioral" data-target="UserUiState" style="border-left: 4px solid #ec4899;">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <span class="card-index">#20</span>
+                            <span class="category-badge" style="color: #f472b6; background: #83184344; border: 1px solid #db2777;">
+                                GOF BEHAVIORAL
+                            </span>
+                            <span class="pattern-badge" style="color: #f472b6; background: #83184344; border: 1px solid #db2777;">
+                                STATE_SEALED_CLASS_FSM
+                            </span>
+                            <span class="target-name">sealed_interface: <strong>UserUiState</strong></span>
+                        </div>
+                        <div class="header-right">
+                            <span class="confidence-badge badge-vh">95% [VERY_HIGH]</span>
+                            <button class="btn-copy-card-ai" onclick='copySingleAiPrompt("Refactor and review the following Kotlin pattern/violation:\n- Pattern: state_sealed_class_fsm (GoF Behavioral)\n- Target: UserUiState (sealed_interface)\n- Location: /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:16:1\n- Summary: Type-safe finite state machine modeling distinct lifecycle states with payload data.\n\nPlease provide an idiomatic Kotlin 1.9 - 2.0+ clean architecture refactoring leveraging Coroutines, Flow, Sealed ADTs, and SOLID principles.")' title="Copy AI Refactoring Prompt">🤖 Copy for AI</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="summary-text"><strong>Summary:</strong> Type-safe finite state machine modeling distinct lifecycle states with payload data.</p>
+                        <p class="primary-loc"><strong>Primary Location:</strong> <code>/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:16:1</code></p>
+                        <div class="evidence-section">
+                            <strong>Evidence Trail (1 heuristics):</strong>
+                            <ul class="evidence-list">
+                                <li class="evidence-item" style="border-left-color: #ec4899;"><span class="weight-tag" style="color: #f472b6;">+95%</span> <span class="rule-code">[BEHAVIORAL_STATE_SEALED_FSM]</span> Sealed type &#x27;UserUiState&#x27; models type-safe Finite State Machine (FSM) with associated lifecycle states <span class="location-tag">📍 /Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:16:1</span></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span>✅</span>
+        <span id="toastMsg">AI Context Prompt Copied to Clipboard!</span>
+    </div>
+
+    <!-- AI Prompt Preview Modal -->
+    <div id="promptModal" class="modal-overlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title">🤖 AI Architect Context Prompt (Kotlin)</div>
+                <button class="modal-close" onclick="closePromptModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 13px; color: #94a3b8; margin-bottom: 12px;">Structured XML/Markdown context for LLMs (Claude, GPT-4, Gemini) including Coroutines, Flow, Compose, and safety analysis.</p>
+                <textarea id="modalPromptArea" class="prompt-textarea" readonly>&lt;codebase_architecture_analysis language=&quot;kotlin&quot;&gt;
+  &lt;project path=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture&quot; files=&quot;6&quot; detections=&quot;20&quot;&gt;
+    &lt;category_summary&gt;
+      &lt;category name=&quot;KOTLIN_IDIOMATIC&quot; count=&quot;2&quot; /&gt;
+      &lt;category name=&quot;COROUTINES_CONCURRENCY&quot; count=&quot;9&quot; /&gt;
+      &lt;category name=&quot;COMPOSE_DSL&quot; count=&quot;4&quot; /&gt;
+      &lt;category name=&quot;CREATIONAL&quot; count=&quot;3&quot; /&gt;
+      &lt;category name=&quot;BEHAVIORAL&quot; count=&quot;2&quot; /&gt;
+    &lt;/category_summary&gt;
+    &lt;kotlin_design_patterns_and_coroutines&gt;
+      &lt;pattern type=&quot;sealed_hierarchy_adt&quot; target=&quot;UserUiState&quot; category=&quot;kotlin_idiomatic&quot; confidence=&quot;95%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:16&quot;&gt;
+        &lt;summary&gt;Exhaustive sum types / Algebraic Data Types representing closed polymorphic domain models.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;KOTLIN_SEALED_HIERARCHY&quot; weight=&quot;+95%&quot;&gt;Sealed type &#x27;UserUiState&#x27; (sealed_interface) defines an Algebraic Data Type (ADT) hierarchy for exhaustive pattern matching&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;inline_value_class&quot; target=&quot;UserId&quot; category=&quot;kotlin_idiomatic&quot; confidence=&quot;95%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:6&quot;&gt;
+        &lt;summary&gt;Zero-runtime-overhead strongly typed domain primitives preventing primitive obsession.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;KOTLIN_INLINE_VALUE_CLASS&quot; weight=&quot;+95%&quot;&gt;Value class &#x27;UserId&#x27; encapsulates strongly typed domain primitive with zero runtime allocation overhead&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;structured_concurrency_scope&quot; target=&quot;UserViewModel&quot; category=&quot;coroutines_concurrency&quot; confidence=&quot;90%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12&quot;&gt;
+        &lt;summary&gt;Parent-child lifecycle-bound coroutine scopes preventing unconfined background leaks.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;COROUTINES_STRUCTURED_SCOPE&quot; weight=&quot;+90%&quot;&gt;Type &#x27;UserViewModel&#x27; bounds asynchronous jobs within structured CoroutineScope&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;stateflow_reactive_stream&quot; target=&quot;UserRepositoryImpl&quot; category=&quot;coroutines_concurrency&quot; confidence=&quot;95%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:12&quot;&gt;
+        &lt;summary&gt;Hot reactive state stream emitting updates to subscribed collectors in presentation/domain layers.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;COROUTINES_STATEFLOW_STREAM&quot; weight=&quot;+95%&quot;&gt;Type &#x27;UserRepositoryImpl&#x27; defines 1 hot StateFlow/SharedFlow reactive stream(s) (_usersFlow)&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;stateflow_reactive_stream&quot; target=&quot;UserViewModel&quot; category=&quot;coroutines_concurrency&quot; confidence=&quot;95%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12&quot;&gt;
+        &lt;summary&gt;Hot reactive state stream emitting updates to subscribed collectors in presentation/domain layers.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;COROUTINES_STATEFLOW_STREAM&quot; weight=&quot;+95%&quot;&gt;Type &#x27;UserViewModel&#x27; defines 2 hot StateFlow/SharedFlow reactive stream(s) (_uiState, uiState)&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;suspending_function_async&quot; target=&quot;getUser&quot; category=&quot;coroutines_concurrency&quot; confidence=&quot;85%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:15&quot;&gt;
+        &lt;summary&gt;Sequential non-blocking asynchronous execution without callback hell.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;COROUTINES_SUSPEND_FUNCTION&quot; weight=&quot;+85%&quot;&gt;Suspending function &#x27;getUser&#x27; enables non-blocking asynchronous continuation&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;suspending_function_async&quot; target=&quot;saveUser&quot; category=&quot;coroutines_concurrency&quot; confidence=&quot;85%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:19&quot;&gt;
+        &lt;summary&gt;Sequential non-blocking asynchronous execution without callback hell.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;COROUTINES_SUSPEND_FUNCTION&quot; weight=&quot;+85%&quot;&gt;Suspending function &#x27;saveUser&#x27; enables non-blocking asynchronous continuation&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;suspending_function_async&quot; target=&quot;getUser&quot; category=&quot;coroutines_concurrency&quot; confidence=&quot;85%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt:6&quot;&gt;
+        &lt;summary&gt;Sequential non-blocking asynchronous execution without callback hell.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;COROUTINES_SUSPEND_FUNCTION&quot; weight=&quot;+85%&quot;&gt;Suspending function &#x27;getUser&#x27; enables non-blocking asynchronous continuation&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;suspending_function_async&quot; target=&quot;saveUser&quot; category=&quot;coroutines_concurrency&quot; confidence=&quot;85%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt:7&quot;&gt;
+        &lt;summary&gt;Sequential non-blocking asynchronous execution without callback hell.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;COROUTINES_SUSPEND_FUNCTION&quot; weight=&quot;+85%&quot;&gt;Suspending function &#x27;saveUser&#x27; enables non-blocking asynchronous continuation&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;dispatcher_io_offload&quot; target=&quot;getUser&quot; category=&quot;coroutines_concurrency&quot; confidence=&quot;90%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:15&quot;&gt;
+        &lt;summary&gt;Explicit switching to background worker pools for blocking I/O and computation.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;COROUTINES_DISPATCHER_OFFLOAD&quot; weight=&quot;+90%&quot;&gt;Function &#x27;getUser&#x27; explicitly offloads blocking computation using withContext(Dispatchers)&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;dispatcher_io_offload&quot; target=&quot;saveUser&quot; category=&quot;coroutines_concurrency&quot; confidence=&quot;90%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:19&quot;&gt;
+        &lt;summary&gt;Explicit switching to background worker pools for blocking I/O and computation.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;COROUTINES_DISPATCHER_OFFLOAD&quot; weight=&quot;+90%&quot;&gt;Function &#x27;saveUser&#x27; explicitly offloads blocking computation using withContext(Dispatchers)&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;compose_declarative_view&quot; target=&quot;UserProfileScreen&quot; category=&quot;compose_dsl&quot; confidence=&quot;95%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:9&quot;&gt;
+        &lt;summary&gt;Declarative UI component transforming data state into reactive UI trees.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;COMPOSE_DECLARATIVE_VIEW&quot; weight=&quot;+95%&quot;&gt;Composable function &#x27;UserProfileScreen&#x27; acts as a declarative UI component&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;compose_declarative_view&quot; target=&quot;UserCardView&quot; category=&quot;compose_dsl&quot; confidence=&quot;95%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:15&quot;&gt;
+        &lt;summary&gt;Declarative UI component transforming data state into reactive UI trees.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;COMPOSE_DECLARATIVE_VIEW&quot; weight=&quot;+95%&quot;&gt;Composable function &#x27;UserCardView&#x27; acts as a declarative UI component&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;remember_mutable_state&quot; target=&quot;UserProfileScreen&quot; category=&quot;compose_dsl&quot; confidence=&quot;90%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:9&quot;&gt;
+        &lt;summary&gt;Recomposition-scoped observable state within Jetpack Compose functions.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;COMPOSE_REMEMBER_MUTABLE_STATE&quot; weight=&quot;+90%&quot;&gt;Function &#x27;UserProfileScreen&#x27; preserves observable UI state across recompositions using remember&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;view_model_state_holder&quot; target=&quot;UserViewModel&quot; category=&quot;compose_dsl&quot; confidence=&quot;95%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12&quot;&gt;
+        &lt;summary&gt;Architecture component retaining and coordinating UI state across configuration changes.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;COMPOSE_VIEWMODEL_STATE_HOLDER&quot; weight=&quot;+95%&quot;&gt;Class &#x27;UserViewModel&#x27; implements ViewModel architectural state holder&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;singleton_object_declaration&quot; target=&quot;NetworkConfig&quot; category=&quot;creational&quot; confidence=&quot;95%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt:3&quot;&gt;
+        &lt;summary&gt;Thread-safe, lazy language-level Singleton via `object` declaration.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;CREATIONAL_SINGLETON_OBJECT&quot; weight=&quot;+95%&quot;&gt;Object declaration &#x27;NetworkConfig&#x27; provides language-level thread-safe Singleton&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;factory_method&quot; target=&quot;Companion.createClient&quot; category=&quot;creational&quot; confidence=&quot;85%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt:9&quot;&gt;
+        &lt;summary&gt;Static or interface factory method instantiating polymorphic types (`create...`, `make...`).&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;CREATIONAL_FACTORY_METHOD&quot; weight=&quot;+85%&quot;&gt;Method &#x27;createClient&#x27; on &#x27;Companion&#x27; encapsulates instance instantiation as a Factory Method&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;prototype_data_copy&quot; target=&quot;UserAccount&quot; category=&quot;creational&quot; confidence=&quot;85%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:9&quot;&gt;
+        &lt;summary&gt;Immutable instance replication and value transformation via `copy()` or `Cloneable`.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;CREATIONAL_PROTOTYPE_DATA_COPY&quot; weight=&quot;+85%&quot;&gt;Type &#x27;UserAccount&#x27; implements Prototype pattern for instance replication and value transformation&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;observer_flow_published&quot; target=&quot;UserViewModel&quot; category=&quot;behavioral&quot; confidence=&quot;90%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12&quot;&gt;
+        &lt;summary&gt;Reactive observer publisher notifying subscribed collectors on state mutations.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;BEHAVIORAL_OBSERVER_FLOW&quot; weight=&quot;+90%&quot;&gt;Type &#x27;UserViewModel&#x27; acts as Reactive Observer Subject publishing 1 stream(s)&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+      &lt;pattern type=&quot;state_sealed_class_fsm&quot; target=&quot;UserUiState&quot; category=&quot;behavioral&quot; confidence=&quot;95%&quot; location=&quot;/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:16&quot;&gt;
+        &lt;summary&gt;Type-safe finite state machine modeling distinct lifecycle states with payload data.&lt;/summary&gt;
+        &lt;evidence&gt;
+          &lt;item rule=&quot;BEHAVIORAL_STATE_SEALED_FSM&quot; weight=&quot;+95%&quot;&gt;Sealed type &#x27;UserUiState&#x27; models type-safe Finite State Machine (FSM) with associated lifecycle states&lt;/item&gt;
+        &lt;/evidence&gt;
+      &lt;/pattern&gt;
+    &lt;/kotlin_design_patterns_and_coroutines&gt;
+  &lt;/project&gt;
+&lt;/codebase_architecture_analysis&gt;</textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-view-prompt" onclick="closePromptModal()">Close</button>
+                <button class="btn-ai-context" onclick="copyModalPrompt()">📋 Copy Prompt</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const FULL_LLM_PROMPT = "<codebase_architecture_analysis language=\"kotlin\">\n  <project path=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture\" files=\"6\" detections=\"20\">\n    <category_summary>\n      <category name=\"KOTLIN_IDIOMATIC\" count=\"2\" />\n      <category name=\"COROUTINES_CONCURRENCY\" count=\"9\" />\n      <category name=\"COMPOSE_DSL\" count=\"4\" />\n      <category name=\"CREATIONAL\" count=\"3\" />\n      <category name=\"BEHAVIORAL\" count=\"2\" />\n    </category_summary>\n    <kotlin_design_patterns_and_coroutines>\n      <pattern type=\"sealed_hierarchy_adt\" target=\"UserUiState\" category=\"kotlin_idiomatic\" confidence=\"95%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:16\">\n        <summary>Exhaustive sum types / Algebraic Data Types representing closed polymorphic domain models.</summary>\n        <evidence>\n          <item rule=\"KOTLIN_SEALED_HIERARCHY\" weight=\"+95%\">Sealed type 'UserUiState' (sealed_interface) defines an Algebraic Data Type (ADT) hierarchy for exhaustive pattern matching</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"inline_value_class\" target=\"UserId\" category=\"kotlin_idiomatic\" confidence=\"95%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:6\">\n        <summary>Zero-runtime-overhead strongly typed domain primitives preventing primitive obsession.</summary>\n        <evidence>\n          <item rule=\"KOTLIN_INLINE_VALUE_CLASS\" weight=\"+95%\">Value class 'UserId' encapsulates strongly typed domain primitive with zero runtime allocation overhead</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"structured_concurrency_scope\" target=\"UserViewModel\" category=\"coroutines_concurrency\" confidence=\"90%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12\">\n        <summary>Parent-child lifecycle-bound coroutine scopes preventing unconfined background leaks.</summary>\n        <evidence>\n          <item rule=\"COROUTINES_STRUCTURED_SCOPE\" weight=\"+90%\">Type 'UserViewModel' bounds asynchronous jobs within structured CoroutineScope</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"stateflow_reactive_stream\" target=\"UserRepositoryImpl\" category=\"coroutines_concurrency\" confidence=\"95%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:12\">\n        <summary>Hot reactive state stream emitting updates to subscribed collectors in presentation/domain layers.</summary>\n        <evidence>\n          <item rule=\"COROUTINES_STATEFLOW_STREAM\" weight=\"+95%\">Type 'UserRepositoryImpl' defines 1 hot StateFlow/SharedFlow reactive stream(s) (_usersFlow)</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"stateflow_reactive_stream\" target=\"UserViewModel\" category=\"coroutines_concurrency\" confidence=\"95%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12\">\n        <summary>Hot reactive state stream emitting updates to subscribed collectors in presentation/domain layers.</summary>\n        <evidence>\n          <item rule=\"COROUTINES_STATEFLOW_STREAM\" weight=\"+95%\">Type 'UserViewModel' defines 2 hot StateFlow/SharedFlow reactive stream(s) (_uiState, uiState)</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"suspending_function_async\" target=\"getUser\" category=\"coroutines_concurrency\" confidence=\"85%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:15\">\n        <summary>Sequential non-blocking asynchronous execution without callback hell.</summary>\n        <evidence>\n          <item rule=\"COROUTINES_SUSPEND_FUNCTION\" weight=\"+85%\">Suspending function 'getUser' enables non-blocking asynchronous continuation</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"suspending_function_async\" target=\"saveUser\" category=\"coroutines_concurrency\" confidence=\"85%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:19\">\n        <summary>Sequential non-blocking asynchronous execution without callback hell.</summary>\n        <evidence>\n          <item rule=\"COROUTINES_SUSPEND_FUNCTION\" weight=\"+85%\">Suspending function 'saveUser' enables non-blocking asynchronous continuation</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"suspending_function_async\" target=\"getUser\" category=\"coroutines_concurrency\" confidence=\"85%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt:6\">\n        <summary>Sequential non-blocking asynchronous execution without callback hell.</summary>\n        <evidence>\n          <item rule=\"COROUTINES_SUSPEND_FUNCTION\" weight=\"+85%\">Suspending function 'getUser' enables non-blocking asynchronous continuation</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"suspending_function_async\" target=\"saveUser\" category=\"coroutines_concurrency\" confidence=\"85%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserRepository.kt:7\">\n        <summary>Sequential non-blocking asynchronous execution without callback hell.</summary>\n        <evidence>\n          <item rule=\"COROUTINES_SUSPEND_FUNCTION\" weight=\"+85%\">Suspending function 'saveUser' enables non-blocking asynchronous continuation</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"dispatcher_io_offload\" target=\"getUser\" category=\"coroutines_concurrency\" confidence=\"90%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:15\">\n        <summary>Explicit switching to background worker pools for blocking I/O and computation.</summary>\n        <evidence>\n          <item rule=\"COROUTINES_DISPATCHER_OFFLOAD\" weight=\"+90%\">Function 'getUser' explicitly offloads blocking computation using withContext(Dispatchers)</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"dispatcher_io_offload\" target=\"saveUser\" category=\"coroutines_concurrency\" confidence=\"90%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/UserRepositoryImpl.kt:19\">\n        <summary>Explicit switching to background worker pools for blocking I/O and computation.</summary>\n        <evidence>\n          <item rule=\"COROUTINES_DISPATCHER_OFFLOAD\" weight=\"+90%\">Function 'saveUser' explicitly offloads blocking computation using withContext(Dispatchers)</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"compose_declarative_view\" target=\"UserProfileScreen\" category=\"compose_dsl\" confidence=\"95%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:9\">\n        <summary>Declarative UI component transforming data state into reactive UI trees.</summary>\n        <evidence>\n          <item rule=\"COMPOSE_DECLARATIVE_VIEW\" weight=\"+95%\">Composable function 'UserProfileScreen' acts as a declarative UI component</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"compose_declarative_view\" target=\"UserCardView\" category=\"compose_dsl\" confidence=\"95%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:15\">\n        <summary>Declarative UI component transforming data state into reactive UI trees.</summary>\n        <evidence>\n          <item rule=\"COMPOSE_DECLARATIVE_VIEW\" weight=\"+95%\">Composable function 'UserCardView' acts as a declarative UI component</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"remember_mutable_state\" target=\"UserProfileScreen\" category=\"compose_dsl\" confidence=\"90%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserScreen.kt:9\">\n        <summary>Recomposition-scoped observable state within Jetpack Compose functions.</summary>\n        <evidence>\n          <item rule=\"COMPOSE_REMEMBER_MUTABLE_STATE\" weight=\"+90%\">Function 'UserProfileScreen' preserves observable UI state across recompositions using remember</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"view_model_state_holder\" target=\"UserViewModel\" category=\"compose_dsl\" confidence=\"95%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12\">\n        <summary>Architecture component retaining and coordinating UI state across configuration changes.</summary>\n        <evidence>\n          <item rule=\"COMPOSE_VIEWMODEL_STATE_HOLDER\" weight=\"+95%\">Class 'UserViewModel' implements ViewModel architectural state holder</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"singleton_object_declaration\" target=\"NetworkConfig\" category=\"creational\" confidence=\"95%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt:3\">\n        <summary>Thread-safe, lazy language-level Singleton via `object` declaration.</summary>\n        <evidence>\n          <item rule=\"CREATIONAL_SINGLETON_OBJECT\" weight=\"+95%\">Object declaration 'NetworkConfig' provides language-level thread-safe Singleton</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"factory_method\" target=\"Companion.createClient\" category=\"creational\" confidence=\"85%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/data/NetworkConfig.kt:9\">\n        <summary>Static or interface factory method instantiating polymorphic types (`create...`, `make...`).</summary>\n        <evidence>\n          <item rule=\"CREATIONAL_FACTORY_METHOD\" weight=\"+85%\">Method 'createClient' on 'Companion' encapsulates instance instantiation as a Factory Method</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"prototype_data_copy\" target=\"UserAccount\" category=\"creational\" confidence=\"85%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:9\">\n        <summary>Immutable instance replication and value transformation via `copy()` or `Cloneable`.</summary>\n        <evidence>\n          <item rule=\"CREATIONAL_PROTOTYPE_DATA_COPY\" weight=\"+85%\">Type 'UserAccount' implements Prototype pattern for instance replication and value transformation</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"observer_flow_published\" target=\"UserViewModel\" category=\"behavioral\" confidence=\"90%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/presentation/UserViewModel.kt:12\">\n        <summary>Reactive observer publisher notifying subscribed collectors on state mutations.</summary>\n        <evidence>\n          <item rule=\"BEHAVIORAL_OBSERVER_FLOW\" weight=\"+90%\">Type 'UserViewModel' acts as Reactive Observer Subject publishing 1 stream(s)</item>\n        </evidence>\n      </pattern>\n      <pattern type=\"state_sealed_class_fsm\" target=\"UserUiState\" category=\"behavioral\" confidence=\"95%\" location=\"/Volumes/External/Code/DPX-Kotlin/examples/clean_android_architecture/domain/UserAccount.kt:16\">\n        <summary>Type-safe finite state machine modeling distinct lifecycle states with payload data.</summary>\n        <evidence>\n          <item rule=\"BEHAVIORAL_STATE_SEALED_FSM\" weight=\"+95%\">Sealed type 'UserUiState' models type-safe Finite State Machine (FSM) with associated lifecycle states</item>\n        </evidence>\n      </pattern>\n    </kotlin_design_patterns_and_coroutines>\n  </project>\n</codebase_architecture_analysis>";
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msgSpan = document.getElementById('toastMsg');
+            msgSpan.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        function copyFullAiContext() {
+            navigator.clipboard.writeText(FULL_LLM_PROMPT).then(() => {
+                showToast("✅ Full AI Context Prompt copied to clipboard!");
+            }).catch(err => {
+                console.error("Failed to copy", err);
+            });
+        }
+
+        function copySingleAiPrompt(promptText) {
+            navigator.clipboard.writeText(promptText).then(() => {
+                showToast("✅ Finding refactoring prompt copied for AI!");
+            }).catch(err => {
+                console.error("Failed to copy", err);
+            });
+        }
+
+        function openPromptModal() {
+            document.getElementById('promptModal').style.display = 'flex';
+        }
+
+        function closePromptModal() {
+            document.getElementById('promptModal').style.display = 'none';
+        }
+
+        function closeModalOnOverlay(e) {
+            if (e.target.id === 'promptModal') {
+                closePromptModal();
+            }
+        }
+
+        function copyModalPrompt() {
+            const textarea = document.getElementById('modalPromptArea');
+            navigator.clipboard.writeText(textarea.value).then(() => {
+                showToast("✅ Prompt copied to clipboard!");
+                closePromptModal();
+            });
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        const cards = document.querySelectorAll('.pattern-card');
+        const filterBtns = document.querySelectorAll('.cat-filter-btn');
+        let selectedCategory = 'all';
+
+        function filterCards() {
+            const query = searchInput.value.toLowerCase();
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const pattern = card.dataset.pattern || '';
+                const category = card.dataset.category || '';
+                const target = card.dataset.target || '';
+
+                const matchesCategory = (selectedCategory === 'all' || category === selectedCategory);
+                const matchesSearch = (text.includes(query) || pattern.includes(query) || category.includes(query) || target.includes(query));
+
+                if (matchesCategory && matchesSearch) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        searchInput.addEventListener('input', filterCards);
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectedCategory = btn.dataset.filter;
+                filterBtns.forEach(b => b.style.outline = 'none');
+                btn.style.outline = '2px solid #7f52ff';
+                filterCards();
+            });
+        });
+    </script>
+</body>
+</html>

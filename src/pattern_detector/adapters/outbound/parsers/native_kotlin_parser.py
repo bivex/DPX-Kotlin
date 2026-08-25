@@ -37,7 +37,7 @@ class NativeKotlinParserAdapter(ParserPort):
         r"(?:<(?P<generics>[^>]+)>\s*)?"
         r"(?:(?P<receiver>[A-Za-z0-9_<>?]+)\.)?"
         r"(?P<name>[A-Za-z0-9_]+)\s*"
-        r"\((?P<params>[^)]*)\)"
+        r"\((?P<params>.*)\)"
         r"(?:\s*:\s*(?P<return_type>[^{=\n]+))?"
     )
 
@@ -46,9 +46,8 @@ class NativeKotlinParserAdapter(ParserPort):
         r"(?P<modifiers>(?:public|private|protected|internal|open|final|abstract|override|const|lateinit)\s+)*"
         r"(?P<mutability>val|var)\s+"
         r"(?P<name>[A-Za-z0-9_]+)"
-        r"(?:\s*:\s*(?P<type_name>[^=;{\n]+?))?"
-        r"(?:\s+by\s+(?P<delegate>[^;{\n]+)|\s*=\s*(?P<init>[^;{\n]+))?"
-        r"\s*$"
+        r"(?:\s*:\s*(?P<type_name>[A-Za-z0-9_<>?,.\s]+?))?"
+        r"(?:\s+by\s+(?P<delegate>[^\n]+)|\s*=\s*(?P<init>[^\n]+))?$"
     )
 
     BRANCH_KEYWORDS = re.compile(r"\b(if\s*\(|when\s*\(|when\s*\{|for\s*\(|while\s*\(|catch\s*\(|&&|\|\||\?:)")

@@ -115,7 +115,7 @@ class IteratorSequenceFlowRule(BaseRule):
     def evaluate(self, model: CodeModel) -> list[Detection]:
         detections: list[Detection] = []
         for t in model.all_types:
-            has_iterator = any(inh in ("Iterator", "Sequence", "Iterable", "Flow") for inh in t.inherited_types)
+            has_iterator = any(any(k in inh for k in ("Iterator", "Sequence", "Iterable", "Flow")) for inh in t.inherited_types)
             has_next = any(fn.name in ("next", "hasNext") for fn in t.functions)
             if has_iterator or has_next:
                 evidences = [
