@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dpx-kotlin"
+version = "0.1.0"
+description = "🎯 Modern Kotlin Static Analyzer: Coroutines, Flow, Jetpack Compose, GoF & Multiplatform Architectural Pattern Detector"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    { name = "bivex", email = "dev@bivex.com" },
+]
+dependencies = [
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+]
+
+[project.scripts]
+dpx-kotlin = "pattern_detector.adapters.inbound.cli.main:main"
+dpx = "pattern_detector.adapters.inbound.cli.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pattern_detector"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-v --cov=pattern_detector --cov-report=term-missing"
